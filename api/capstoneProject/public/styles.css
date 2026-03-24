@@ -1,0 +1,102 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Main Card */
+.container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    padding: 40px;
+    border-radius: 25px;
+    width: 400px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+/* Title */
+h1 {
+    font-size: 28px;
+    margin-bottom: 25px;
+}
+
+/* Form */
+form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+/* Input */
+input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+}
+
+/* Button */
+button {
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: none;
+    background: #ff7a18;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #ff5722;
+}
+
+/* Weather Result Card */
+.result {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 20px;
+    border-radius: 20px;
+    animation: fadeIn 0.6s ease;
+}
+
+.result h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.result p {
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+/* Error */
+.error {
+    color: #ffbaba;
+    margin-top: 10px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
