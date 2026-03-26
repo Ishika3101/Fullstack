@@ -9,16 +9,24 @@ const db=new pg.Client({ //client is class of pg module
   host:"localhost",
   database:"world",
   password:"Ishika3101*",
-  port:5434,
+  port:5432,
 });
 db.connect();
 
-let quiz = [
-  { country: "France", capital: "Paris" },
-  { country: "United Kingdom", capital: "London" },
-  { country: "United States of America", capital: "New York" },
-];
-
+// let quiz = [
+//   { country: "France", capital: "Paris" },
+//   { country: "United Kingdom", capital: "London" },
+//   { country: "United States of America", capital: "New York" },
+// ];
+//to retrieve data from database instead of quiz
+db.query("SELECT * FROM capitals",(err,res)=>{
+  if(err){
+    console.error("Error executing query",err.stack);
+  }else{
+    quiz=res.rows;
+  }
+  db.end();
+})
 let totalCorrect = 0;
 
 // Middleware
