@@ -374,7 +374,8 @@
   <h2 class="total-count">Total Countries: <%=total%>
   </h2>
   <script>
-    const country_codes = "<%= countries %>".split(",") 
+    const country_codes = "<%= countries %>".split(",")  //creating country code array 
+    //why we split with comma when its a array because ejs templating gives string and split is string method
     console.log(typeof ("<%= countries %>"))
     country_codes.forEach(code => {
       document.getElementById(code).style.fill = 'teal'
