@@ -9,7 +9,8 @@
     <% for(let item of listItems){%>
       <div class="item">
         <form action="/delete" method="post">
-          <input type="checkbox" onchange="this.form.submit()" name="deleteItemId" value="<%= item.id %>">
+          <input type="checkbox" onchange="this.form.submit()" name="deleteItemId" value="<%= item.id %>"> //value is set to item.id as which title is deleted by user it will give id of that
+          //checkbox is clicked (onChange) then form is submitted means making post request to delete route
         </form>
 
         <p id="title<%=item.id%>">
@@ -17,14 +18,14 @@
         </p>
 
         <form class="edit" action="/edit" method="post">
-          <input type="hidden" name="updatedItemId" value="<%= item.id %>">
+          <input type="hidden" name="updatedItemId" value="<%= item.id %>"> //takes id so that when user edits it also gets change in database
           <input id="input<%=item.id%>" type="text" name="updatedItemTitle" value="<%= item.title %>" autocomplete="off"
             autofocus="true" hidden="true" />
           <button id="done<%=item.id%>" class="edit" type="submit" hidden><img class="icon"
               src="/assets/icons/check-solid.svg" alt="tick image"></button>
         </form>
         <button id="edit<%=item.id%>" class="edit" onclick="handler('<%=item.id%>')"><img class="icon"
-            src="/assets/icons/pencil-solid.svg" alt="pencil image"></button>
+            src="/assets/icons/pencil-solid.svg" alt="pencil image"></button> //when edit unhide tick and hide pencil image
       </div>
       <% } %>
 
