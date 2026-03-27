@@ -35,8 +35,8 @@ app.post("/add",async(req,res)=>{
   const input=req.body["country"]; //where user types country in the name =country
   try {
     const result = await db.query(
-      "SELECT country_code FROM countries WHERE country_name = $1",
-      [input]
+      "SELECT country_code FROM countries WHERE LOWER(country_name) LIKE "%"||$1||"%";",
+      [input.toLowerCase()]
     );
 
     const data = result.rows[0];
@@ -56,7 +56,7 @@ app.post("/add",async(req,res)=>{
         error: "Country has already been added, try again.",
       });
     }
-  } catch (err) {
+  } catch (err) {  //checks error when country name is not there
     console.log(err);
     const countries = await checkVisisted();
     res.render("index.ejs", {
