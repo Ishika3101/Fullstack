@@ -1,6 +1,15 @@
 import express from "express";
 import bodyParser from "body-parser";
+import pg from "pg";
 
+const db=new pg.Client({
+  user:"postgres",
+  host:"localhost",
+  database:"permalist",
+  password:"Ishika3101*",
+  port:5432
+});
+db.connect();
 const app = express();
 const port = 3000;
 
@@ -12,11 +21,17 @@ let items = [
   { id: 2, title: "Finish homework" },
 ];
 
-app.get("/", (req, res) => {
-  res.render("index.ejs", {
+app.get("/", async(req, res) => {
+  try{
+    const result=await db.query("SELECT * FROM items ORDER BY id ASC");
+    items=result.rows;
+    res.render("index.ejs", {
     listTitle: "Today",
     listItems: items,
   });
+  }catch(err){
+    console.log(err);
+  }
 });
 
 app.post("/add", (req, res) => {
