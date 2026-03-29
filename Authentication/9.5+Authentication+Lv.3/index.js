@@ -57,14 +57,33 @@ app.get("/logout", (req, res) => {
   });
 });
 
-app.get("/secrets", (req, res) => {
+app.get("/secrets", async(req, res) => {
   console.log(req.user);
   if (req.isAuthenticated()) {
-    res.render("secrets.ejs");
+    try{
+      const result=await db.query("SELECT secret FROM users WHERE email=$1",[req.user.email]);
+      console.log(result);
+      const secret=result.rows[0].secret;
+      if(secret){
+        res.render("secrets.ejs",{secret:secret});
+      }else{
+        res.render("secrets.ejs",{secret:"You should submit a secret!"});
+      }
+    }catch(err){
+      console.log(err);
+    }
   } else {
     res.redirect("/login");
   }
 });
+
+app.get("/submit",(req,res)=>{
+  if(req.isAuthenticated()){
+    res.render("submit.ejs");
+  }else{
+    res.redirect("/login");
+  }
+})
 //this hits when user goes to login with google
 app.get("/auth/google",passport.authenticate("google",{
   scope:["profile","email"],
@@ -90,6 +109,16 @@ app.post(
   })
 );
 
+app.post("/submit",async(req,res)=>{
+  const secret=req.body.secret;
+  console.log(req.user); //when we pass strategy we get hold of user as we serialize and deserialize
+  try{
+    await db.query("UPDATE users SET secrets=$1 WHERE email=$2",[secret,req.user.email]); //to set secret for that particular user that matches with email
+    res.redirect("/secrets");
+  }catch(err){
+    console.log(err); 
+  }
+})
 app.post("/register", async (req, res) => {
   const email = req.body.username;
   const password = req.body.password;
