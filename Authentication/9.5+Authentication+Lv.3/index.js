@@ -6,6 +6,7 @@ import passport from "passport";
 import { Strategy } from "passport-local";
 import session from "express-session";
 import env from "dotenv";
+import GoogleStrategy from "passport-google-oauth2";
 
 const app = express();
 const port = 3000;
@@ -64,6 +65,22 @@ app.get("/secrets", (req, res) => {
     res.redirect("/login");
   }
 });
+//this hits when user goes to login with google
+app.get("/auth/google",passport.authenticate("google",{
+  scope:["profile","email"],
+}));
+
+app.get("/auth/google/secrets",passport.authenticate("google",{
+  successRedirect:"/secrets",
+  failureRedirect:"/login"
+}));
+
+app.get("/logout",(req,res)=>{
+  req.logout((err)=>{
+    if(err) console.log(err)
+    res.redirect("/")
+  });
+});
 
 app.post(
   "/login",
@@ -105,8 +122,8 @@ app.post("/register", async (req, res) => {
     console.log(err);
   }
 });
-
-passport.use(
+//local strategy
+passport.use("local",
   new Strategy(async function verify(username, password, cb) {
     try {
       const result = await db.query("SELECT * FROM users WHERE email = $1 ", [
@@ -138,6 +155,30 @@ passport.use(
     }
   })
 );
+
+//Oauth strategy
+//this is going to set up our passport authentication middleware
+passport.use("google",new GoogleStrategy({   //google is the name of strategy
+  clientID:process.env.GOOGLE_CLIENT_ID,
+  clientSecret:process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL:"http://localhost:3000/auth/google/secrets",
+  userProfileURL:"https://www.googleapis.com/oauth2/v3/userinfo"
+},async(accessToken,refreshToken,profile,cb)=>{ //callback function that triggers once process succeeds,once they actually login with their google account
+  console.log(profile);
+  try{
+    const result=await db.query("SELECT * FROM users WHERE email=$1",[profile.email]);
+    if(result.rows.length===0){
+      const newUser=await db.query("INSERT INTO users (email,password) VALUES ($1,$2)",[profile.email,"google"])//we dont get password from google so we can either save id or name google so that they know that we cant get password because its from google
+      cb(null,newUser.rows[0]);
+    }else{
+      //already have existing user
+      cb(null,newUser.rows[0]);
+    }
+    }catch(err){
+      cb(err);
+    }
+  }
+));
 
 passport.serializeUser((user, cb) => {
   cb(null, user);
