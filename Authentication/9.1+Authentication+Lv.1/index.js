@@ -39,7 +39,7 @@ app.post("/register", async (req, res) => {
 
     if(checkResult.rows.length>0){
       res.send("Email already exists.Try logging in.");
-    }else{
+    }else{  
       //password hashing
       bcrypt.hash(password,saltRounds,async(err,hash)=>{
         if(err){
